@@ -8,7 +8,7 @@ const StartGameScreen = (props) => {
     const [ selectedNumber, setSelectedNumber ] = useState();
 
     const numberInputHandler = inputText => {
-        setEnteredValue(inputText.replace(/[^0-9]/g, ''))
+        setEnteredValue(inputText.replace(/[^0-9]/g, ''));
     };
 
     const resetInputHandler = () => {
@@ -17,19 +17,36 @@ const StartGameScreen = (props) => {
     };
 
     const confirmInputHandler = () => {
-        const chooseNumber = parseInt(enteredValue)
-        if ( isNaN(chooseNumber) || chooseNumber <= 0 || chooseNumber > 99)
-        Alert.alert('Invalid input', 
-        'Please enter values between 1 - 99', 
-        [{text: 'Okay', style: "destructive", onPress: resetInputHandler }]
-        )
-        return;
-    
-
+        const chosenNumber = parseInt(enteredValue);
+        if (isNaN(chosenNumber) || chosenNumber <= 0 || chosenNumber > 99) {
+            Alert.alert('Invalid input', 
+            'Please enter values between 1 - 99',
+             [{text: 'Okay', style: "destructive", 
+             onPress: resetInputHandler }]);
+            return;
+        }
         setConfirmed(true);
+        setSelectedNumber(chosenNumber);
         setEnteredValue('');
-        setSelectedNumber(chooseNumber);
-    };
+        Keyboard.dismiss();
+    }
+
+    
+        let confirmedOutput;
+    
+        if (confirmed) {
+           confirmedOutput = (
+                <Card style={styles.summary}>
+                    <Text>You have Selected</Text>
+                    <View style={styles.text__select}>
+                        <Text style={styles.number}>{selectedNumber}</Text>
+                    </View>
+                    <Button title='Start Game' onPress={() => props.onStartGame(selectedNumber)} />
+                </Card>
+           );
+       }   
+
+     
 
 
     return (
@@ -41,7 +58,8 @@ const StartGameScreen = (props) => {
                     <Text>Select a Number</Text>
                     <TextInput {...props}
                     style={styles.startScreen__textInput}
-                    keyboardType='numeric' maxLength={2} 
+                    keyboardType='numeric'
+                    maxLength={2} 
                     selectTextOnFocus={true} 
                     onChangeText={numberInputHandler}
                     value={enteredValue}
@@ -58,10 +76,11 @@ const StartGameScreen = (props) => {
                         
                     </View>
                 </Card>
+                {confirmedOutput}
             </View>
         </TouchableWithoutFeedback>
-    );
-}
+        )
+    };
 
 const styles = StyleSheet.create({
     startScreen: {
@@ -101,9 +120,29 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         textAlign: "center",
         marginVertical: 20,
+    },
+
+    summary: {
+        marginTop: 20,
+        alignItems: "center",
+    },
+
+    text__select: {
+        borderWidth: 2,
+        borderColor: '#032437',
+        padding: 10,
+        borderRadius: 10,
+        marginVertical: 20,
+        alignItems: "center",
+        justifyContent: "center",
+    },
+
+    number: {
+        color: '#fcdb6c' ,
+        fontSize: 22,
     }
     
-})
+});
 
 export default StartGameScreen;
 
